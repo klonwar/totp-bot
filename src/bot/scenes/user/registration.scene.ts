@@ -1,4 +1,12 @@
-import { Ctx, Scene, SceneEnter } from 'nestjs-telegraf';
+import {
+  Ctx,
+  Hears,
+  Message,
+  Scene,
+  SceneEnter,
+  SceneLeave,
+  Sender,
+} from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { BotScene } from '../scenes.constants';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +15,7 @@ import { Repository } from 'typeorm';
 import { Logger, UseFilters } from '@nestjs/common';
 import { AnyExceptionFilter } from '../../filters/any-exception.filter';
 import { ConfigService } from '@nestjs/config';
+import { User as TelegramUser } from 'typegram/manage';
 
 @Scene(BotScene.REGISTRATION)
 export class RegistrationScene {
@@ -22,7 +31,34 @@ export class RegistrationScene {
   @UseFilters(AnyExceptionFilter)
   async enter(@Ctx() context: SceneContext) {
     await this.registerUser(context);
+    await context.reply('Enter your secret TOTP code');
+  }
+
+  @Hears(/[A-Z0-9a-z]{52}/)
+  @UseFilters(AnyExceptionFilter)
+  async id(
+    @Ctx() context: SceneContext,
+    @Message('text') secret: string,
+    @Sender() sender: TelegramUser,
+  ) {
+    const user = await this.userRepository.findOneBy({ id: sender.id });
+    user.secret = secret;
+    await user.save();
     await context.scene.leave();
+  }
+
+  @Hears(/.*/)
+  @UseFilters(AnyExceptionFilter)
+  async wrong(@Ctx() context: SceneContext) {
+    await context.reply('Wrong format');
+  }
+
+  @SceneLeave()
+  @UseFilters(AnyExceptionFilter)
+  async leave(@Ctx() context: SceneContext) {
+    await context.reply(
+      'Saved.\nIn order to change your secret please run /start again',
+    );
   }
 
   private async registerUser(context: SceneContext) {

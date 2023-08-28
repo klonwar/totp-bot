@@ -39,6 +39,7 @@
     "sqlite3": "^5.1.6",
     "telegraf": "^4.12.2",
     "telegraf-logger": "^3.0.0",
+    "totp-generator": "^0.0.14",
     "typeorm": "^0.3.17"
   },
   "devDependencies": {

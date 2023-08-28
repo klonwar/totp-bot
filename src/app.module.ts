@@ -1,11 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { CronModule } from './cron/cron.module';
 import { BotModule } from './bot/bot.module';
-import { PageModule } from './page/page.module';
 import { AppUpdate } from './app.update';
-import { PageJob } from './model/page-job/page-job.model';
 import { User } from './model/user/user.model';
 
 @Module({
@@ -19,10 +16,8 @@ import { User } from './model/user/user.model';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([User, PageJob]),
+    TypeOrmModule.forFeature([User]),
     BotModule,
-    CronModule,
-    PageModule,
   ],
   providers: [AppUpdate],
 })

@@ -9,7 +9,6 @@ import { BotService } from './bot.service';
 import { User } from '../model/user/user.model';
 import { MessageService } from './message.service';
 import * as TelegrafLogger from 'telegraf-logger';
-import { PageJob } from '../model/page-job/page-job.model';
 
 @Module({
   imports: [
@@ -29,7 +28,7 @@ import { PageJob } from '../model/page-job/page-job.model';
         ],
       }),
     }),
-    TypeOrmModule.forFeature([User, PageJob]),
+    TypeOrmModule.forFeature([User]),
     ScenesModule,
   ],
   controllers: [],
