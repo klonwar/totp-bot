@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BotModule } from './bot/bot.module';
 import { AppUpdate } from './app.update';
 import { User } from './model/user/user.model';
+import AppDataSource from '../ormconfig';
 
 @Module({
   imports: [
@@ -11,10 +12,7 @@ import { User } from './model/user/user.model';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: './db.sqlite',
-      synchronize: true,
-      autoLoadEntities: true,
+      ...AppDataSource.options,
     }),
     TypeOrmModule.forFeature([User]),
     BotModule,
