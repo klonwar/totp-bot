@@ -34,7 +34,7 @@ export class RegistrationScene {
     await context.reply('Enter your secret TOTP code');
   }
 
-  @Hears(/[A-Z0-9a-z]{52}/)
+  @Hears(/^([A-Za-z2-7=]{8})+$/)
   @UseFilters(AnyExceptionFilter)
   async id(
     @Ctx() context: SceneContext,
